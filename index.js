@@ -3,6 +3,7 @@
 
 var DeployPluginBase = require('ember-cli-deploy-plugin');
 var Promise = require('ember-cli/lib/ext/promise');
+var redis = require('redis');
 
 module.exports = {
   name: 'ember-cli-deploy-redis-publish',
@@ -10,32 +11,53 @@ module.exports = {
   createDeployPlugin: function(options) {
     var DeployPlugin = DeployPluginBase.extend({
       name: options.name,
-
-      // note: most plugins can simply implement these next two properties and use
-      // the base class' implementation of the `configure` hook
       defaultConfig: {
-        someKey: 'defaultValue',
-        anotherKey: function(context) {
-          return context.anotherKey; // to use data added to the context by another plugin
-        }
+        host: function(context) {
+          return context.config.redis.host;
+        },
+
+        port: function(context) {
+          return context.config.redis.port;
+        },
+
+        password: function(context) {
+          return context.config.redis.password;
+        },
+
+        events: function(context) {
+          return context.config.redisPublish;
+        },
       },
-      requiredConfig: ['redis'], // throw an error if this is not configured
 
-      // implement any hooks appropriate for your plugin
-      willUpload: function(context) {
-        // Use the `readConfig` method for uniform access to this plugin's config,
-        // whether via a dynamic function or a configured value
-        var redis = this.readConfig('redis');
+      requiredConfig: ['host', 'port', 'password', 'events'],
 
-        // Use the `log` method to generate output consistent with the tree style
-        // of ember-cli-deploy's verbose output
-        this.log(redis);
+      didActivate: function() {
+        var redisConfig = {
+          host: this.readConfig('host'),
+          port: this.readConfig('port'),
+          password: this.readConfig('password'),
+        };
 
-        // Need to do something async? You can return a promise.
-        // Need to fail out? Throw an error or return a promise which becomes rejected
-        return Promise.resolve();
+        var client = redis.createClient(redisConfig);
+        var events = this.readConfig('events');
+        var promises = events.map(function(event) {
+          return new Promise(function(resolve, reject) {
+            var message = JSON.stringify(event.message);
+            client.publish(event.channel, message, function (err, response) {
+              if (err) {
+                return reject(err);
+              }
+
+              this.log(`Redis publish on channel: ${event.channel}, message: ${message}`);
+
+              return resolve(response);
+            }.bind(this));
+          }.bind(this));
+        }.bind(this));
+
+        return Promise.all(promises);
       },
     });
     return new DeployPlugin();
-  }
+  },
 };

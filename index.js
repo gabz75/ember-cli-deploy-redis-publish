@@ -45,8 +45,6 @@ module.exports = {
         },
       },
 
-      requiredConfig: ['host', 'port', 'password', 'events'],
-
       didActivate: function() {
         const redisConfig = {
           host: this.readConfig('host'),
@@ -59,12 +57,13 @@ module.exports = {
           return new Promise((resolve, reject) => {
             let message;
 
-            if (typeof message === Object) {
+            if (typeof event.message === 'object') {
               message = JSON.stringify(event.message);
+            } else if (typeof event.message === 'function') {
+              message = event.message();
             } else {
               message = event.message;
             }
-
 
             if (!message || !event.channel) {
               return reject(new Error('invalid configuration for redisPublish'));

@@ -1,5 +1,7 @@
 # Ember-cli-deploy-redis-publish
 
+[![](https://ember-cli-deploy.github.io/ember-cli-deploy-version-badges/plugins/ember-cli-deploy-s3.svg)](http://ember-cli-deploy.github.io/ember-cli-deploy-version-badges/)
+
 Upon activation this ember-cli-deploy plugin publishes an event on redis based on your configuration.
 
 ## Requirements

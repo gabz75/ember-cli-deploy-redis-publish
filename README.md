@@ -1,26 +1,44 @@
 # Ember-cli-deploy-redis-publish
 
-This README outlines the details of collaborating on this Ember addon.
+Upon activation this ember-cli-deploy plugin publishes an event on redis based on your configuration.
 
-## Installation
+## Requirements
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
+You need to provide your redis configuration in `config/deploy.js` (same than [ember-cli-deploy-redis](https://github.com/ember-cli-deploy/ember-cli-deploy-redis))
 
-## Running
+```
+ENV.redis = {
+  host: '<your-redis-host>',
+  port: <your-redis-port>,
+  password: '<your-redis-password>'
+}
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+```
 
-## Running Tests
+## Quick Start
 
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+Run the following command in your terminal
 
-## Building
+```
+ember install ember-cli-deploy-redis-publish
+```
 
-* `ember build`
+In your `config/deploy.js`, add one or more configuration object.
 
-For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
+```
+ENV.redisPublish = [
+  {
+    channel: '<your-channel-name>',
+    message: '<your-message>'
+  },
+  {
+    channel: '<your-channel-name>',
+    message: { '<some-key>': '<some-value>' } // will be serialized through JSON.stringify
+  }
+]
+```
+
+
+## TODO
+
+* Add tests

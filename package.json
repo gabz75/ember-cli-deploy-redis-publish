@@ -1,7 +1,7 @@
 {
   "name": "ember-cli-deploy-redis-publish",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.0.1",
+  "description": "ember-cli-deploy plugin to publish redis events",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -9,16 +9,20 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "ember try:testall"
+    "test": "node tests/runner.js"
   },
-  "repository": "",
+  "repository": "gabz75/ember-cli-deploy-redis-publish",
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "",
+  "author": "Gabriel Debeaupuis <gabriel.debeaupuis@gmail.com>",
+  "contributors": [],
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.2",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "core-object": "^2.0.5",
     "ember-ajax": "0.7.1",
     "ember-cli": "2.5.1",
     "ember-cli-app-version": "^1.0.0",
@@ -36,7 +40,8 @@
     "ember-export-application-global": "^1.0.5",
     "ember-load-initializers": "^0.5.1",
     "ember-resolver": "^2.0.3",
-    "loader.js": "^4.0.1"
+    "loader.js": "^4.0.1",
+    "mocha": "^2.5.3"
   },
   "keywords": [
     "ember-addon",
@@ -44,7 +49,10 @@
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.6",
-    "ember-cli-deploy-plugin": "^0.2.6"
+    "ember-cli-deploy-plugin": "^0.2.6",
+    "glob": "^7.0.5",
+    "mocha": "^2.5.3",
+    "redis": "^2.6.2"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

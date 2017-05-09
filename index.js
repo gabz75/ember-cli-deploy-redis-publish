@@ -2,7 +2,7 @@
 'use strict';
 
 const DeployPluginBase = require('ember-cli-deploy-plugin');
-const Promise = require('ember-cli/lib/ext/promise');
+const RSVP = require('rsvp');
 const redis = require('redis');
 
 module.exports = {
@@ -54,7 +54,7 @@ module.exports = {
 
         const client = redis.createClient(redisConfig);
         const promises = this.readConfig('events').map((event) => {
-          return new Promise((resolve, reject) => {
+          return new RSVP.Promise((resolve, reject) => {
             let message;
 
             if (typeof event.message === 'object') {
@@ -81,7 +81,7 @@ module.exports = {
           });
         });
 
-        return Promise.all(promises);
+        return RSVP.all(promises);
       },
     });
     return new DeployPlugin();
